@@ -1,1 +1,5 @@
-# Python dependencies: Django, DRF, Pillow, django-cors-headers, python-dotenv, etc.
+Django>=4.2
+djangorestframework>=3.14
+django-cors-headers>=4.0
+django-filter>=23.0
+python-dotenv>=1.0

@@ -1,1 +1,3 @@
-# URL patterns: map events endpoints to the corresponding views
+from django.urls import path
+
+urlpatterns = []

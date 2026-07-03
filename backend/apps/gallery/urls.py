@@ -1,1 +1,3 @@
-# URL patterns: map gallery endpoints to the corresponding views
+from django.urls import path
+
+urlpatterns = []

@@ -1298,17 +1298,24 @@ function renderGallery() {
 }
 
 let resourceFilter = "all";
-function renderResources() {
-  const resources = getResources();
+async function renderResources() {
   const cats = ["all"].concat(Object.keys(RESOURCE_CATEGORIES));
   document.getElementById("resourcesFilters").innerHTML = cats.map((c) => {
     const label = c === "all" ? "Toutes" : RESOURCE_CATEGORIES[c].label;
     return `<button class="filter-chip ${resourceFilter === c ? "active" : ""}" data-filter="${c}">${label}</button>`;
   }).join("");
 
-  const filtered = resourceFilter === "all" ? resources : resources.filter((r) => r.categorie === resourceFilter);
-  document.getElementById("resourcesGrid").innerHTML = filtered.length
-    ? filtered.map(resourceCardHtml).join("")
+  let resources = [];
+  try {
+    const params = resourceFilter !== "all" ? `?categorie=${resourceFilter}` : "";
+    const res = await fetch(`http://127.0.0.1:8000/api/resources/${params}`);
+    resources = await res.json();
+  } catch(e) {
+    resources = getResources();
+  }
+
+  document.getElementById("resourcesGrid").innerHTML = resources.length
+    ? resources.map(resourceCardHtml).join("")
     : `<div class="empty-state"><div class="icon">📁</div><p>Aucune ressource dans cette catégorie.</p></div>`;
 
   document.querySelectorAll("#resourcesFilters .filter-chip").forEach((chip) => {
@@ -1386,10 +1393,17 @@ function renderContactForm() {
   });
 }
 
-function renderRecruitment() {
-  const s = getSettings();
+async function renderRecruitment() {
   const container = document.getElementById("recruitmentContainer");
-  const phase = recruitmentPhase(s);
+  let phase = "ferme";
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/recruitment/settings/");
+    const data = await res.json();
+    phase = data.phase;
+  } catch(e) {
+    const s = getSettings();
+    phase = recruitmentPhase(s);
+  }
 
   if (phase === "non_demarre") {
     container.innerHTML = `
@@ -1397,16 +1411,14 @@ function renderRecruitment() {
       <div class="closed-box">
         <div class="icon">⏳</div>
         <h3>Le recrutement n'a pas encore commencé</h3>
-        <p>Les candidatures ouvriront le <strong style="color:var(--grey-l)">${formatDateLong(s.date_ouverture_candidatures + "T00:00:00")}</strong>${s.date_limite_candidatures ? ` et resteront ouvertes jusqu'au ${formatDateLong(s.date_limite_candidatures + "T23:59:59")}` : ""}. Reviens à ce moment-là, ou suis nos réseaux pour ne rien manquer.</p>
+        <p>Les candidatures n'ont pas encore commencé. Suis nos réseaux pour ne rien manquer.</p>
         <a href="#contact" class="btn-s">Nous contacter</a>
       </div>`;
     return;
   }
 
   if (phase === "ferme") {
-    const closedNote = s.date_limite_candidatures
-      ? `<p style="font-size:.78rem;color:var(--grey);margin:-.75rem 0 1.25rem">Les candidatures ont fermé le <strong style="color:var(--grey-l)">${formatDateLong(s.date_limite_candidatures + "T23:59:59")}</strong></p>`
-      : "";
+    const closedNote = "";
     container.innerHTML = `
       <div class="status-banner status-closed"><span class="status-dot"></span> Candidatures fermées</div>
       ${closedNote}
@@ -1419,9 +1431,7 @@ function renderRecruitment() {
     return;
   }
 
-  const deadlineNote = s.date_limite_candidatures
-    ? `<p style="font-size:.78rem;color:var(--grey);margin:-.75rem 0 1.25rem">Date limite de candidature : <strong style="color:var(--grey-l)">${formatDateLong(s.date_limite_candidatures + "T23:59:59")}</strong></p>`
-    : "";
+  const deadlineNote = "";
   const banner = `<div class="status-banner status-open"><span class="status-dot"></span> Candidatures ouvertes</div>`;
 
   container.innerHTML = `
@@ -1477,7 +1487,7 @@ function renderRecruitment() {
   document.getElementById("recruitmentForm").addEventListener("submit", handleRecruitmentSubmit);
 }
 
-function handleRecruitmentSubmit(ev) {
+async function handleRecruitmentSubmit(ev) {
   ev.preventDefault();
   const form = ev.target;
   const data = {
@@ -1499,16 +1509,27 @@ function handleRecruitmentSubmit(ev) {
 
   const list = getCandidatures();
   list.push(data);
-  setCandidatures(list);
-
-  document.getElementById("recruitmentContainer").innerHTML = `
-    <div class="form-card form-success">
-      <div class="icon">🎉</div>
-      <h3>Candidature envoyée !</h3>
-      <p>Merci ${escapeHtml(data.prenom)}, ta candidature a bien été enregistrée. L'équipe MIRAI va l'étudier et te recontactera par email.</p>
-    </div>`;
-
-  showToast("Candidature soumise avec succès", "success");
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/recruitment/candidatures/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      document.getElementById("recruitmentContainer").innerHTML = `
+        <div class="form-card form-success">
+          <div class="icon">🎉</div>
+          <h3>Candidature envoyée !</h3>
+          <p>Merci ${escapeHtml(data.prenom)}, ta candidature a bien été enregistrée.</p>
+        </div>`;
+      showToast("Candidature soumise avec succès", "success");
+    } else {
+      const err = await res.json();
+      showToast(err.detail || "Erreur lors de l'envoi.", "error");
+    }
+  } catch(e) {
+    showToast("Impossible de joindre le serveur.", "error");
+  }
 }
 
 function renderFooter() {

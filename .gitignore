@@ -1,1 +1,11 @@
-# Files and directories to exclude from version control (node_modules, .env, __pycache__, dist, etc.)
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+backend/db.sqlite3
+backend/.env
+
+# Node
+frontend/node_modules/
+frontend/package-lock.json

@@ -1,1 +1,3 @@
-# URL patterns: map contact endpoints to the corresponding views
+from django.urls import path
+
+urlpatterns = []

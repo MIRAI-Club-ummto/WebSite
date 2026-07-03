@@ -1,1 +1,4 @@
-// Gallery page: display photo/video grid fetched from the API
+import React from 'react'
+export default function Gallery() {
+  return <div style={{color:'white',padding:'2rem'}}><h1>Galerie</h1></div>
+}
