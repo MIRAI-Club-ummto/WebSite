@@ -666,7 +666,7 @@ footer ul a:hover{color:var(--violet)}
    MIRAI CLUB — Démo front-end (1 seul fichier HTML)
    Toutes les données sont stockées dans le localStorage du
    navigateur pour simuler le futur backend Django + PostgreSQL.
-   Identifiants admin de démo : admin / mirai2026
+   Identifiants admin gérés côté backend
    (Ce login est uniquement client-side, pour la démo. La vraie
    authentification se fera côté Django dans la version finale.)
    ============================================================ */
@@ -791,7 +791,7 @@ const RESOURCE_CATEGORIES = {
   lien_utile: { label: "Lien utile", icon: "🔗" },
 };
 
-const ADMIN_CREDENTIALS = { username: "admin", password: "mirai2026" };
+const ADMIN_CREDENTIALS = { username: "admin", password: "" };
 
 /* ---------- 2. STOCKAGE (localStorage) ---------- */
 const STORAGE_PREFIX = "mirai_";
