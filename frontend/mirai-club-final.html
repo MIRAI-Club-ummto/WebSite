@@ -122,17 +122,167 @@ section h2{font-size:2rem}
 .proj-card h3{font-size:1.05rem;margin-bottom:.4rem}
 .proj-card p{font-size:.85rem;color:var(--grey);line-height:1.5}
 
-/* MEMBRES */
-.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.25rem}
-.member-card{background:rgba(255,255,255,.03);border:1px solid rgba(168,85,247,.12);border-radius:10px;padding:1.5rem;text-align:center;transition:all .25s}
-.member-card:hover{border-color:rgba(168,85,247,.35)}
-.avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:800;font-size:1.2rem;color:var(--navy);margin:0 auto 1rem;border:2px solid rgba(168,85,247,.3);overflow:hidden}
-.member-card h4{font-size:1rem;margin-bottom:.3rem}
-.badge-poste{display:inline-block;background:rgba(168,85,247,.15);color:var(--violet-l);font-size:.72rem;padding:.2rem .65rem;border-radius:999px;margin-bottom:.75rem}
-.member-card p{font-size:.82rem;color:var(--grey);margin-bottom:.75rem}
-.member-links{display:flex;justify-content:center;gap:.75rem}
-.member-links a{font-size:.78rem;color:var(--gold)}
 
+/* =========================
+   MEMBERS ULTRA PREMIUM
+========================= */
+
+.members-section{
+  padding: 100px 8%;
+  text-align: center;
+  position: relative;
+}
+
+.members-header h2{
+  font-size: 2.5rem;
+  margin-top: 10px;
+  background: linear-gradient(90deg,#fff,#b46bff,#7c3aed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.members-header p{
+  color: rgba(255,255,255,0.65);
+  margin-top: 10px;
+}
+
+/* SLIDER */
+.members-slider{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-top:50px;
+}
+
+.members-viewport{
+  overflow:hidden;
+  flex:1;
+}
+
+.members-track{
+  display:flex;
+  transition: transform .6s cubic-bezier(.25,.8,.25,1);
+}
+
+/* CARD c'est un conteneur pour chaque membre */
+.member-card{
+  flex:0 0 25%;
+  padding:15px;
+  box-sizing:border-box;
+}
+
+.member-card-inner{
+  background: rgba(255,255,255,0.04);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(180,120,255,0.15);
+  border-radius: 20px;
+  padding: 25px;
+  transition: .4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* glow c'est un effet lumineux autour de la carte */
+.member-card-inner::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background: radial-gradient(circle at top left, rgba(180,100,255,0.25), transparent 60%);
+  opacity:0;
+  transition:.4s;
+}
+
+.member-card-inner:hover::before{
+  opacity:1;
+}
+
+.member-card-inner:hover{
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(180,120,255,0.4);
+}
+
+/* IMAGE */
+.member-img{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  margin:auto;
+  border:2px solid rgba(180,120,255,0.4);
+  transition:.4s;
+}
+
+.member-card-inner:hover .member-img{
+  transform: scale(1.1);
+}
+
+/* ROLE BADGE c'est un badge qui affiche le rôle d'un membre */
+.role{
+  display:inline-block;
+  margin-top:12px;
+  padding:5px 12px;
+  font-size:12px;
+  border-radius:20px;
+  background: rgba(180,100,255,0.15);
+  color:#c084fc;
+}
+
+/* SOCIAL ICONS */
+.socials{
+  margin-top:15px;
+  opacity:0;
+  transform: translateY(10px);
+  transition:.4s;
+}
+
+.member-card-inner:hover .socials{
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* NAV BUTTONS */
+.nav-btn{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  border:none;
+  cursor:pointer;
+  background: rgba(255,255,255,0.05);
+  color:white;
+  font-size:20px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition:.3s;
+}
+
+.nav-btn:hover{
+  background: rgba(180,120,255,0.2);
+  transform: scale(1.1);
+}
+
+/* DOTS */
+.members-dots{
+  margin-top:25px;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+
+.members-dots button{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  border:none;
+  background: rgba(255,255,255,0.2);
+  transition:.3s;
+}
+
+.members-dots button.active{
+  width:20px;
+  border-radius:10px;
+  background:#a855f7;
+}
 /* GALERIE */
 .filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2.5rem}
 .filter-chip{font-family:'Inter',sans-serif;font-size:.75rem;padding:.45rem 1rem;border-radius:999px;border:1px solid rgba(168,85,247,.25);background:transparent;color:var(--grey-l);cursor:pointer;transition:all .2s}
@@ -474,10 +624,29 @@ footer ul a:hover{color:var(--violet)}
     <div class="projs-grid" id="homeProjectsGrid"></div>
   </section>
 
-  <section class="reveal">
-    <span class="sec-eyebrow">L'équipe</span>
-    <h2>Bureau & Membres Fondateurs</h2>
-    <div class="members-grid" id="homeMembersGrid"></div>
+  <section class="members-section reveal">
+    <div class="members-header">
+      <span class="sec-eyebrow">L'équipe MIRAI</span>
+      <h2>Bureau & Membres Fondateurs</h2>
+      <p>Une équipe passionnée qui construit l’avenir du club.</p>
+    </div>
+      <!--on va faire une div classe members-slider qui contient les cartes des membres -->
+    <div class="members-slider" id="membersSlider">
+      
+      <button class="nav-btn prev" id="memberPrev">‹</button>
+      <!--on va creer la classe members-viewport c'est le conteneur principal pour les cartes des membres -->
+      <div class="members-viewport">
+        <!--jai ajouter members-track car on a besoin d'un conteneur pour les cartes -->
+        <div class="members-track" id="membersTrack">
+          
+          <!-- JS inject cards here -->
+        </div>
+      </div>
+    
+      <button class="nav-btn next" id="memberNext">›</button>
+    </div>
+  
+    <div class="members-dots" id="membersDots"></div>
   </section>
 </div>
 
@@ -1161,7 +1330,7 @@ function renderHome() {
     : `<div class="empty-state"><div class="icon">🗓️</div><p>Aucun événement prévu pour le moment. Revenez bientôt !</p></div>`;
 
   document.getElementById("homeProjectsGrid").innerHTML = getProjects().map(projectCardHtml).join("");
-  document.getElementById("homeMembersGrid").innerHTML = getMembers().map(memberCardHtml).join("");
+  renderMembersSlider();/*c'est une fonction qui appelle la fonction de rendu du slider */
 }
 
 /* Anime les chiffres (0 -> valeur réelle) quand la section devient visible.
@@ -1198,6 +1367,113 @@ function animateStatsOnReveal() {
   observer.observe(strip);
 }
 
+let memberIndex = 0;
+// Base de données des membres (générée par défaut)
+function getMembers() {
+  return [
+    { name: "Ouiza Hammoutene", role: "Présidente", position: "Master 2 S2i", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "TAREB Djilali", role: "Vice-Président 1", position: "Master 2 S2i", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Graiche Dalia", role: "Vice-Président 2", position: "Master 2 S2i", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "MEBARKI Celia", role: "Secrétaire Général", position: "Master 2 Si", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Messaoudi dit Mahmoudi Madjid", role: "Vice Secrétaire", position: "Bureau", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },  
+    { name: "Mansouri Akli", role: "Trésorièr", position: "Bureau", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Chemloul Sifax", role: "Vice Trésorièr", position: "Bureau", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Bouazoune Mohamed", role: "Responsable Design", position: "Fondateur", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Arab Imane", role: "Responsable Design", position: "Fondateur", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Merbah Laeticia", role: "Responsable Design", position: "Fondateur", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Messadene Amayas", role: "Responsable communication", position: "Fondatrice", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Cheklat Koucaila", role: "Responsable Communication", position: "Fondatrice", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Gharnaout Missipsa", role: "Responsable Logistique", position: "Fondatrice", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" },
+    { name: "Agouillal Mayas", role: "Responsable Logistique", position: "Fondatrice", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", linkedin: "#", github: "#" }
+  ];
+}
+
+function renderMembersSlider(){
+  const members = getMembers();
+  const track = document.getElementById("membersTrack");
+
+  track.innerHTML = members.map(m => `
+    <div class="member-card">
+      <div class="member-card-inner">
+
+        <img class="member-img" src="${m.image}" />
+
+        <h3>${m.name}</h3>
+        <p>${m.role}</p>
+
+        <span class="role">${m.position}</span>
+
+        <div class="socials">
+          <a href="${m.linkedin}" class="social-icon" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+          <a href="${m.github}" class="social-icon" target="_blank" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  `).join("");
+  /*rendu dynamique renderDots*/
+  renderDots(members.length);//renvoie le nombre de membres pour créer les points de navigation
+  updateSlider();
+}
+
+function updateSlider(){
+  const track = document.getElementById("membersTrack");
+  const cardsPerView = getCardsPerView();
+  const membersCount = getMembers().length;
+  //bloquer lindex maximum pour ne pas slider dans le vide
+  const maxIndex = Math.max(0, membersCount - cardsPerView);
+  if (memberIndex > maxIndex) memberIndex = maxIndex;
+  // Appliquer la largeur exacte aux cartes dynamiquement en fonction du viewport
+  const cards = document.querySelectorAll(".member-card");
+  cards.forEach(card => {
+    card.style.flex = `0 0 ${100 / cardsPerView}%`;
+  });
+
+  const offset = memberIndex * (100 / cardsPerView);
+  track.style.transform = `translateX(-${offset}%)`;
+  // Mettre à jour la classe 'active' des points de navigation
+  const dots = document.querySelectorAll(".members-dots button");
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle("active", idx === memberIndex);
+  });
+}
+function renderDots() {
+  const dotsContainer = document.getElementById("membersDots");
+  const cardsPerView = getCardsPerView();
+  const maxSteps = Math.max(0, getMembers().length - cardsPerView) + 1;
+
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < maxSteps; i++) {
+    const dot = document.createElement("button");
+    if (i === memberIndex) dot.classList.add("active");
+    dot.onclick = () => {
+      memberIndex = i;
+      updateSlider();
+    };
+    dotsContainer.appendChild(dot);
+  }
+}
+function getCardsPerView(){
+  if(window.innerWidth >= 1100) return 4;
+  if(window.innerWidth >= 800) return 3;
+  if(window.innerWidth >= 500) return 2;
+  return 1;
+} 
+document.getElementById("memberNext").onclick = () => {
+  memberIndex++;
+  updateSlider();
+};
+
+document.getElementById("memberPrev").onclick = () => {
+  memberIndex = Math.max(0, memberIndex - 1);
+  updateSlider();
+};
+  
+ 
 
 function renderEventsList() {
   const events = getEvents().slice().sort((a, b) => new Date(a.date_evenement) - new Date(b.date_evenement));
@@ -2476,6 +2752,7 @@ function initChatbot() {
   form.addEventListener("submit", (ev) => { ev.preventDefault(); handleChatSubmit(input.value); });
 }
 
+
 /* ---------- 12. INITIALISATION ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   seedIfEmpty();
@@ -2484,7 +2761,27 @@ document.addEventListener("DOMContentLoaded", () => {
   initBgCanvas();
   initChatbot();
   renderFooter();
+  renderMembersSlider();
 
+  document.getElementById("memberNext").onclick = () => { 
+    const cardsPerView = getCardsPerView();
+    const maxIndex = Math.max(0, getMembers().length - cardsPerView);
+    if (memberIndex < maxIndex) {
+      memberIndex++;
+      updateSlider();
+    }
+  };
+  //memberPrev button click handler qui décrémente memberIndex mais ne descend pas en dessous de 0
+  document.getElementById("memberPrev").onclick = () => {
+    memberIndex = Math.max(0, memberIndex - 1);
+    updateSlider();
+  };
+//ici resize event listener qui recalcul les points si le nombre de cartes par vue change 
+  window.addEventListener("resize", () => {
+    // Recalculer les points si le nombre de cartes par vue change
+    renderDots();
+    updateSlider();
+  });
   document.getElementById("navToggle").addEventListener("click", () => {
     document.getElementById("navLinks").classList.toggle("open");
   });
@@ -2495,7 +2792,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("lightbox").addEventListener("click", () => closeLightbox());
 
-  document.getElementById("adminLoginForm").addEventListener("submit", handleAdminLogin);
+  document.getElementById("adminLoginForm").addEventListener("submit", handleAdminLogin); 
 
   const backToTop = document.getElementById("backToTop");
   window.addEventListener("scroll", () => {
@@ -2504,9 +2801,11 @@ document.addEventListener("DOMContentLoaded", () => {
   backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
   window.addEventListener("hashchange", handleRoute);
-
+  window.addEventListener("resize", updateSlider);
   handleRoute();
+  
 });
+
 </script>
 </body>
 </html>
