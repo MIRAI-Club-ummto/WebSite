@@ -1,10 +1,3 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ContactMessageViewSet
+from django.urls import path
 
-router = DefaultRouter()
-router.register(r"messages", ContactMessageViewSet, basename="contactmessage")
-
-urlpatterns = [
-    path("", include(router.urls)),
-]
+urlpatterns = []
