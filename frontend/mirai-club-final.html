@@ -1367,7 +1367,7 @@ function renderContactForm() {
       <button type="submit" class="btn-p">Envoyer le message</button>
     </form>`;
 
-  document.getElementById("contactForm").addEventListener("submit", (ev) => {
+  document.getElementById("contactForm").addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const form = ev.target;
     const nom = form.nom.value.trim();
@@ -1379,9 +1379,17 @@ function renderContactForm() {
       return;
     }
 
-    const list = getContactMessages();
-    list.push({ id: nextId(list), nom, email, message, date_message: new Date().toISOString() });
-    setContactMessages(list);
+    try {
+      await fetch("http://127.0.0.1:8000/api/contact/messages/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nom, email, message }),
+      });
+    } catch(e) {
+      const list = getContactMessages();
+      list.push({ id: nextId(list), nom, email, message, date_message: new Date().toISOString() });
+      setContactMessages(list);
+    }
 
     container.innerHTML = `
       <div class="form-card form-success" style="max-width:100%">
@@ -2498,8 +2506,21 @@ function initChatbot() {
 }
 
 /* ---------- 12. INITIALISATION ---------- */
-document.addEventListener("DOMContentLoaded", () => {
+async function syncEventsFromBackend() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/events/");
+    const events = await res.json();
+    if (Array.isArray(events) && events.length > 0) {
+      setEvents(events);
+    }
+  } catch (e) {
+    console.warn("Backend events indisponible, utilisation du localStorage.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   seedIfEmpty();
+  await syncEventsFromBackend();
   distributeLogoIcon();
   initIntroScreen();
   initBgCanvas();
