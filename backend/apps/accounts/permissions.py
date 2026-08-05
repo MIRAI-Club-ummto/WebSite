@@ -1,1 +1,8 @@
-# Custom DRF permissions: define access rules for accounts endpoints
+from rest_framework.permissions import BasePermission
+
+
+class IsAdminUser(BasePermission):
+    """Autorise uniquement les utilisateurs staff/admin."""
+
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and request.user.is_staff)

@@ -1556,17 +1556,30 @@ function renderFooter() {
 }
 
 /* ---------- 7. ADMINISTRATION ---------- */
-function handleAdminLogin(ev) {
+async function handleAdminLogin(ev) {
   ev.preventDefault();
   const u = document.getElementById("adminUsername").value.trim();
   const p = document.getElementById("adminPassword").value;
-  if (u === ADMIN_CREDENTIALS.username && p === ADMIN_CREDENTIALS.password) {
-    isAdminLoggedIn = true;
-    showToast("Connexion réussie", "success");
-    navigateTo("admin");
-    handleRoute();
-  } else {
-    showToast("Identifiant ou mot de passe incorrect", "error");
+
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ username: u, password: p }),
+    });
+
+    if (res.ok) {
+      isAdminLoggedIn = true;
+      showToast("Connexion réussie", "success");
+      navigateTo("admin");
+      handleRoute();
+    } else {
+      const err = await res.json();
+      showToast(err.detail || "Identifiant ou mot de passe incorrect", "error");
+    }
+  } catch (e) {
+    showToast("Impossible de joindre le serveur.", "error");
   }
 }
 
@@ -2498,8 +2511,21 @@ function initChatbot() {
 }
 
 /* ---------- 12. INITIALISATION ---------- */
-document.addEventListener("DOMContentLoaded", () => {
+async function syncGalleryFromBackend() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/gallery/");
+    const items = await res.json();
+    if (Array.isArray(items)) {
+      setGallery(items);
+    }
+  } catch (e) {
+    console.warn("Backend gallery indisponible, utilisation du localStorage.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   seedIfEmpty();
+  await syncGalleryFromBackend();
   distributeLogoIcon();
   initIntroScreen();
   initBgCanvas();
