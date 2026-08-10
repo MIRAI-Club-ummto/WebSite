@@ -2511,6 +2511,74 @@ function initChatbot() {
 }
 
 /* ---------- 12. INITIALISATION ---------- */
+async function syncWebsiteSettingsFromBackend() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/website/settings/");
+    const data = await res.json();
+    const current = getSettings();
+    const merged = Object.assign({}, current, {
+      logo_url: data.logo_url || current.logo_url || "",
+      slogan: data.slogan || current.slogan || "",
+      mission_texte: data.description || current.mission_texte || "",
+      photo_couverture_url: data.photo_couverture_url || current.photo_couverture_url || "",
+      email_club: data.email || current.email_club || "",
+      instagram: data.instagram || current.instagram || "",
+      facebook: data.facebook || current.facebook || "",
+      linkedin: data.linkedin || current.linkedin || "",
+      github: data.github || current.github || "",
+    });
+    setSettings(merged);
+  } catch (e) {
+    console.warn("Backend website indisponible, utilisation du localStorage.");
+  }
+}
+
+async function syncMembersFromBackend() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/team/");
+    const members = await res.json();
+    if (Array.isArray(members)) {
+      setMembers(members);
+    }
+  } catch (e) {
+    console.warn("Backend team indisponible, utilisation du localStorage.");
+  }
+}
+
+async function syncWebsiteSettingsFromBackend() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/website/settings/");
+    const data = await res.json();
+    const current = getSettings();
+    const merged = Object.assign({}, current, {
+      logo_url: data.logo_url || current.logo_url || "",
+      slogan: data.slogan || current.slogan || "",
+      mission_texte: data.description || current.mission_texte || "",
+      photo_couverture_url: data.photo_couverture_url || current.photo_couverture_url || "",
+      email_club: data.email || current.email_club || "",
+      instagram: data.instagram || current.instagram || "",
+      facebook: data.facebook || current.facebook || "",
+      linkedin: data.linkedin || current.linkedin || "",
+      github: data.github || current.github || "",
+    });
+    setSettings(merged);
+  } catch (e) {
+    console.warn("Backend website indisponible, utilisation du localStorage.");
+  }
+}
+
+async function syncMembersFromBackend() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/team/");
+    const members = await res.json();
+    if (Array.isArray(members)) {
+      setMembers(members);
+    }
+  } catch (e) {
+    console.warn("Backend team indisponible, utilisation du localStorage.");
+  }
+}
+
 async function syncGalleryFromBackend() {
   try {
     const res = await fetch("http://127.0.0.1:8000/api/gallery/");
@@ -2526,6 +2594,8 @@ async function syncGalleryFromBackend() {
 document.addEventListener("DOMContentLoaded", async () => {
   seedIfEmpty();
   await syncGalleryFromBackend();
+  await syncMembersFromBackend();
+  await syncWebsiteSettingsFromBackend();
   distributeLogoIcon();
   initIntroScreen();
   initBgCanvas();
